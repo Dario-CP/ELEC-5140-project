@@ -300,8 +300,8 @@ module RV32iPCPU(
         // Output
         .ID_EXE_inst_in(ID_EXE_inst_in),
         .ID_EXE_PC(ID_EXE_PC),
-        .ID_EXE_ALU_A(ID_EXE_ALU_A),
-        .ID_EXE_ALU_B(ID_EXE_ALU_B),
+        .ID_EXE_ALU_A(ID_EXE_ALU_A),    // Wire from REG_ID_EXE to the ALU (A)
+        .ID_EXE_ALU_B(ID_EXE_ALU_B),    // Wire from REG_ID_EXE to the ALU (B)
         .ID_EXE_ALU_Control(ID_EXE_ALU_Control),
         .ID_EXE_Data_out(ID_EXE_Data_out),
         .ID_EXE_mem_w(ID_EXE_mem_w),
