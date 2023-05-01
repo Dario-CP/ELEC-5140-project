@@ -66,23 +66,15 @@ module Forward_Unit(
     GENERAL INTRODUCTION"
 
     */
-        input [4:0] IF_ID_written_reg,  // IF/ID.WriteRegister
-        input [4:0] IF_ID_read_reg1,    // IF/ID.ReadRegister1
-        input [4:0] IF_ID_read_reg2,    // IF/ID.ReadRegister2
-
-        input [4:0] ID_EXE_written_reg, // ID/EXE.WriteRegister
+        // Input:
         input [4:0] ID_EXE_read_reg1,   // ID/EXE.ReadRegister1
         input [4:0] ID_EXE_read_reg2,   // ID/EXE.ReadRegister2
 
         input [4:0] EXE_MEM_written_reg,// EXE/MEM.WriteRegister
-        input [4:0] EXE_MEM_read_reg1,  // EXE/MEM.ReadRegister1
-        input [4:0] EXE_MEM_read_reg2,  // EXE/MEM.ReadRegister2
 
         input [4:0] MEM_WB_written_reg, // MEM/WB.WriteRegister
-        input [4:0] MEM_WB_read_reg1,   // MEM/WB.ReadRegister1
-        input [4:0] MEM_WB_read_reg2,   // MEM/WB.ReadRegister2
-        
-        
+
+        // Output:
         output reg [1:0] EXE_forwarding_A, // EXE forwarding signal for ALU input A
         output reg [1:0] MEM_forwarding_A  // MEM forwarding signal for ALU input A
 
