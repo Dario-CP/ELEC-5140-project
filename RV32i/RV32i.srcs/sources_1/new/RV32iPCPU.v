@@ -449,4 +449,24 @@ module RV32iPCPU(
         .s(MEM_WB_DatatoReg[1:0]),
         .o(Wt_data[31:0]));
     
+    // Forward Unit
+    ForwardingUnit _forwardingunit_ (
+        // Input:
+        .ID_EXE_read_reg1(ID_EXE_read_reg1),
+        .ID_EXE_read_reg2(ID_EXE_read_reg2),
+
+        .EXE_MEM_RegWrite(EXE_MEM_RegWrite),
+        .EXE_MEM_written_reg(EXE_MEM_written_reg),
+
+        .MEM_WB_RegWrite(MEM_WB_RegWrite),
+        .MEM_WB_written_reg(MEM_WB_written_reg),
+
+        // Output:
+        .EXE_forwarding_A(EXE_forwarding_A),
+        .MEM_forwarding_A(MEM_forwarding_A),
+
+        .EXE_forwarding_B(EXE_forwarding_B),
+        .MEM_forwarding_B(MEM_forwarding_B)
+        );
+
 endmodule
