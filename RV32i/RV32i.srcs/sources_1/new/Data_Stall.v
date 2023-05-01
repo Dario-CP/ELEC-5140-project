@@ -21,16 +21,36 @@
 
 
 module Data_Stall(
-        input [4:0] IF_ID_written_reg,
+        /*
+        Load-Use Hazard Detection
+
+        Check when using instruction is decoded in ID stage
+
+        ALU operand register numbers in ID stage are given by
+                ◦ IF/ID.RegisterRs, IF/ID.RegisterRt
+                
+        Load-use hazard when
+                ◦ ID/EX.MemRead and
+                ((ID/EX.RegisterRd = IF/ID.RegisterRs) or
+                (ID/EX.RegisterRd = IF/ID.RegisterRt))
+
+        If detected, stall and insert bubble
+
+        REFERENCE:
+        "ELEC5140
+        Advanced Computer Architecture
+        Prof. Wei Zhang, ECE, HKUST
+        GENERAL INTRODUCTION"
+        */
+
+        // Input:
+        input ID_EXE_mem_w,
+        input [4:0] ID_EXE_written_reg,
+
         input [4:0] IF_ID_read_reg1,
         input [4:0] IF_ID_read_reg2,
-        input [4:0] ID_EXE_written_reg,
-        input [4:0] ID_EXE_read_reg1,
-        input [4:0] ID_EXE_read_reg2,
-        input [4:0] EXE_MEM_written_reg,
-        input [4:0] EXE_MEM_read_reg1,
-        input [4:0] EXE_MEM_read_reg2,
-        
+
+        // Output:
         output reg PC_dstall,
         output reg IF_ID_dstall,
         output reg ID_EXE_dstall       
@@ -39,17 +59,12 @@ module Data_Stall(
         PC_dstall = 0;
         IF_ID_dstall = 0;
         ID_EXE_dstall = 0;
-        // RAW hazard between IF_ID and ID_EXE (EX hazard)
-        if (ID_EXE_written_reg != 0 && (ID_EXE_written_reg == IF_ID_read_reg1 || ID_EXE_written_reg == IF_ID_read_reg2)) begin
-                PC_dstall = 1;
-                IF_ID_dstall = 1;
-                ID_EXE_dstall = 1;
-        end
-        // RAW hazard between ID_EXE and EXE_MEM (MEM hazard)
-        else if (EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == IF_ID_read_reg1 || EXE_MEM_written_reg == IF_ID_read_reg2)) begin
-                PC_dstall = 1;
-                IF_ID_dstall = 1;
-                ID_EXE_dstall = 1;
+        if (ID_EXE_mem_w
+        && ((ID_EXE_written_reg == IF_ID_read_reg1)
+        || (ID_EXE_written_reg == IF_ID_read_reg2))) begin
+            PC_dstall = 1;
+            IF_ID_dstall = 1;
+            ID_EXE_dstall = 1;
         end
     end
 endmodule

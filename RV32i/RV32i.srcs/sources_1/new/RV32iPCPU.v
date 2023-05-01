@@ -76,6 +76,8 @@ module RV32iPCPU(
     wire [31:0] ID_EXE_PC;
     wire [31:0] ID_EXE_ALU_A;
     wire [31:0] ID_EXE_ALU_B;
+    wire [31:0] ID_EXE_ALU_A_in;
+    wire [31:0] ID_EXE_ALU_B_in;
     wire [4:0] ID_EXE_ALU_Control;
     wire [31:0] ID_EXE_Data_out;
     wire ID_EXE_mem_w;
@@ -107,27 +109,27 @@ module RV32iPCPU(
     wire [1:0] MEM_WB_DatatoReg;
     wire MEM_WB_RegWrite;
    
-   // Stall
-   wire PC_dstall;
-   wire IF_ID_cstall;
-   wire IF_ID_dstall;
-   wire ID_EXE_dstall;
-   
-   
-   
+    // Stall
+    wire PC_dstall;
+    wire IF_ID_cstall;
+    wire IF_ID_dstall;
+    wire ID_EXE_dstall;
+
+    // Forwarding
+    wire [1:0] forwarding_A_sig;
+    wire [1:0] forwarding_B_sig;
+
+
     Data_Stall _dstall_ (
-        .IF_ID_written_reg(IF_ID_written_reg),
+        // Input:
+        .ID_EXE_mem_w(ID_EXE_mem_w),
+
         .IF_ID_read_reg1(IF_ID_read_reg1),
         .IF_ID_read_reg2(IF_ID_read_reg2),
         
         .ID_EXE_written_reg(ID_EXE_written_reg),
-        .ID_EXE_read_reg1(ID_EXE_read_reg1),
-        .ID_EXE_read_reg2(ID_EXE_read_reg2),
-        
-        .EXE_MEM_written_reg(EXE_MEM_written_reg),
-        .EXE_MEM_read_reg1(EXE_MEM_read_reg1),
-        .EXE_MEM_read_reg2(EXE_MEM_read_reg2),
-        
+
+        // Output:
         .PC_dstall(PC_dstall),
         .IF_ID_dstall(IF_ID_dstall),
         .ID_EXE_dstall(ID_EXE_dstall)
@@ -302,8 +304,8 @@ module RV32iPCPU(
         // Output
         .ID_EXE_inst_in(ID_EXE_inst_in),
         .ID_EXE_PC(ID_EXE_PC),
-        .ID_EXE_ALU_A(ID_EXE_ALU_A),    // Wire from REG_ID_EXE to the ALU (A)
-        .ID_EXE_ALU_B(ID_EXE_ALU_B),    // Wire from REG_ID_EXE to the ALU (B)
+        .ID_EXE_ALU_A(ID_EXE_ALU_A),    // Wire from REG_ID_EXE to the ALU Forwarding Multiplexer (A)
+        .ID_EXE_ALU_B(ID_EXE_ALU_B),    // Wire from REG_ID_EXE to the ALU Forwarding Multiplexer (B)
         .ID_EXE_ALU_Control(ID_EXE_ALU_Control),
         .ID_EXE_Data_out(ID_EXE_Data_out),
         .ID_EXE_mem_w(ID_EXE_mem_w),
@@ -343,9 +345,27 @@ module RV32iPCPU(
     // Out:
     //   None
 
+    // ALU Forwarding Multiplexer (A)
+    Mux2to1b32  _mux_forward_alu_a_ (
+        .I0(ID_EXE_ALU_A[31:0]),    // Wire from REG_ID_EXE
+        .I1(Wt_data[31:0]),         // Output from WB stage
+        .I3(EXE_MEM_ALU_out[31:0]), // Output from MEM stage
+        .s(forwarding_A_sig[1:0]    // Forwarding signal
+        .o(ID_EXE_ALU_A_in[31:0])   // Wire to ALU
+        );
+    
+    // ALU Forwarding Multiplexer (B)
+    Mux2to1b32  _mux_forward_alu_b_ (
+        .I0(ID_EXE_ALU_B[31:0]),    // Wire from REG_ID_EXE
+        .I1(Wt_data[31:0]),         // Output from WB stage
+        .I3(EXE_MEM_ALU_out[31:0]), // Output from MEM stage
+        .s(forwarding_B_sig[1:0]    // Forwarding signal
+        .o(ID_EXE_ALU_B_in[31:0])   // Wire to ALU
+        );
+
     ALU _alualu_ (
-        .A(ID_EXE_ALU_A[31:0]),
-        .B(ID_EXE_ALU_B[31:0]),
+        .A(ID_EXE_ALU_A_in[31:0]),
+        .B(ID_EXE_ALU_B_in[31:0]),
         .ALU_operation(ID_EXE_ALU_Control[4:0]),
         .res(ID_EXE_ALU_out[31:0]),
         .overflow(),
@@ -450,7 +470,7 @@ module RV32iPCPU(
         .o(Wt_data[31:0]));
     
     // Forward Unit
-    ForwardingUnit _forwardingunit_ (
+    Forward_Unit _forward_unit_ (
         // Input:
         .ID_EXE_read_reg1(ID_EXE_read_reg1),
         .ID_EXE_read_reg2(ID_EXE_read_reg2),
@@ -462,11 +482,8 @@ module RV32iPCPU(
         .MEM_WB_written_reg(MEM_WB_written_reg),
 
         // Output:
-        .EXE_forwarding_A(EXE_forwarding_A),
-        .MEM_forwarding_A(MEM_forwarding_A),
-
-        .EXE_forwarding_B(EXE_forwarding_B),
-        .MEM_forwarding_B(MEM_forwarding_B)
+        .forwarding_A_sig(forwarding_A_sig),
+        .forwarding_B_sig(forwarding_B_sig)
         );
 
 endmodule

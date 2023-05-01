@@ -77,48 +77,55 @@ module Forward_Unit(
         input [4:0] MEM_WB_written_reg,     // MEM/WB.WriteRegister
 
         // Output:
-        output reg [1:0] EXE_forwarding_A,  // EXE forwarding signal for ALU input A
-        output reg [1:0] MEM_forwarding_A   // MEM forwarding signal for ALU input A
-
-        output reg [1:0] EXE_forwarding_B,  // EXE forwarding signal for ALU input B
-        output reg [1:0] MEM_forwarding_B   // MEM forwarding signal for ALU input B
+        output reg [1:0] forwarding_A_sig,  // forwarding signal for ALU input A (forwarding_A_sig = EXE_forwarding_A | MEM_forwarding_A)
+        output reg [1:0] forwarding_B_sig  // forwarding signal for ALU input B (forwarding_B_sig = EXE_forwarding_B | MEM_forwarding_B)
     );
 
     always @(*) begin
+        // Initialize the forwarding signals
+        forwarding_A_sig = 2'b00;
+        forwarding_B_sig = 2'b00;
+
         // EX hazard
         // Rd = Rs
-        if ((EXE_MEM_RegWrite && EXE_MEM_written_reg != 0) && (EXE_MEM_written_reg == ID_EXE_read_reg1)) begin
+        if ((EXE_MEM_RegWrite && EXE_MEM_written_reg != 0) 
+        && (EXE_MEM_written_reg == ID_EXE_read_reg1)) begin
             // Note: 1'b1 means a binary value of 1 (the 1 on the right of the b)
             // with a width of 1 bit (the 1 on the left of the b)
-            EXE_forwarding_A[0] = 1'b1;   // Signal 1 to forward
+            forwarding_A_sig[1] = 1'b1;   // Signal 1 to forward
         end
         else begin
-            EXE_forwarding_A[0] = 1'b0;   // Signal 0 to not forward
+            forwarding_A_sig[1] = 1'b0;   // Signal 0 to not forward
         end
 
         // Rd = Rt
-        if ((EXE_MEM_RegWrite && EXE_MEM_written_reg != 0) && (EXE_MEM_written_reg == ID_EXE_read_reg2)) begin
-            EXE_forwarding_B[0] = 1'b1;   // Signal 1 to forward
+        if ((EXE_MEM_RegWrite && EXE_MEM_written_reg != 0) 
+        && (EXE_MEM_written_reg == ID_EXE_read_reg2)) begin
+            forwarding_B_sig[1] = 1'b1;   // Signal 1 to forward
         end
         else begin
-            EXE_forwarding_B[0] = 1'b0;   // Signal 0 to not forward
+            forwarding_B_sig[1] = 1'b0;   // Signal 0 to not forward
         end
 
         // MEM hazard (only if there is no EX hazard)
         // Rd = Rs
-        if ((MEM_WB_RegWrite && MEM_WB_written_reg != 0) && (!(EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == ID_EXE_read_reg1))) && (MEM_WB_written_reg == ID_EXE_read_reg1)) begin
-            MEM_forwarding_A[0] = 1'b1;   // Signal 1 to forward
+        if ((MEM_WB_RegWrite && MEM_WB_written_reg != 0) 
+        && (!(EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == ID_EXE_read_reg1))) 
+        && (MEM_WB_written_reg == ID_EXE_read_reg1)) begin
+            forwarding_A_sig[0] = 1'b1;   // Signal 1 to forward
         end
         else begin
-            MEM_forwarding_A[0] = 1'b0;   // Signal 0 to not forward
+            forwarding_A_sig[0] = 1'b0;   // Signal 0 to not forward
         end
 
         // Rd = Rt
-        if ((MEM_WB_RegWrite && MEM_WB_written_reg != 0) && (!(EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == ID_EXE_read_reg2))) && (MEM_WB_written_reg == ID_EXE_read_reg2)) begin
-            MEM_forwarding_B[0] = 1'b1;   // Signal 1 to forward
+        if ((MEM_WB_RegWrite && MEM_WB_written_reg != 0) 
+        && (!(EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == ID_EXE_read_reg2))) 
+        && (MEM_WB_written_reg == ID_EXE_read_reg2)) begin
+            forwarding_B_sig[0] = 1'b1;   // Signal 1 to forward
         end
         else begin
-            MEM_forwarding_B[0] = 1'b0;   // Signal 0 to not forward
+            forwarding_B_sig[0] = 1'b0;   // Signal 0 to not forward
         end
     end
 endmodule    
