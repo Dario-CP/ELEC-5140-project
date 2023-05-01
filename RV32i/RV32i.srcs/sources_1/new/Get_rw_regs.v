@@ -21,6 +21,7 @@
 
 
 module Get_rw_regs(
+    // This module is used to get the read and written registers of each instruction
         input [31:0] inst_in,
         output reg [4:0] written_reg,
         output reg [4:0] read_reg1,

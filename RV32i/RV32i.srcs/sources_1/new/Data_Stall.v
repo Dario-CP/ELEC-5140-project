@@ -39,13 +39,13 @@ module Data_Stall(
         PC_dstall = 0;
         IF_ID_dstall = 0;
         ID_EXE_dstall = 0;
-        // RAW hazard between IF_ID and ID_EXE
+        // RAW hazard between IF_ID and ID_EXE (EX hazard)
         if (ID_EXE_written_reg != 0 && (ID_EXE_written_reg == IF_ID_read_reg1 || ID_EXE_written_reg == IF_ID_read_reg2)) begin
                 PC_dstall = 1;
                 IF_ID_dstall = 1;
                 ID_EXE_dstall = 1;
         end
-        // RAW hazard between ID_EXE and EXE_MEM
+        // RAW hazard between ID_EXE and EXE_MEM (MEM hazard)
         else if (EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == IF_ID_read_reg1 || EXE_MEM_written_reg == IF_ID_read_reg2)) begin
                 PC_dstall = 1;
                 IF_ID_dstall = 1;

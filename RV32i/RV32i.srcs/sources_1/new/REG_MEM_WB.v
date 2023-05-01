@@ -27,10 +27,10 @@ module REG_MEM_WB(
         // Input
         input [31:0] inst_in,
         input [31:0] PC,
-        input [31:0] ALU_out,
+        input [31:0] ALU_out,   // Data from ALU
         input [1:0] DatatoReg,
         input RegWrite,
-        input [31:0] Data_in,
+        input [31:0] Data_in,   // Data from memory (load)
         // Output
         output reg [31:0] MEM_WB_inst_in,
         output reg [31:0] MEM_WB_PC = 0,

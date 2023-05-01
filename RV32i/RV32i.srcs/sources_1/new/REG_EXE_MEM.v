@@ -39,7 +39,7 @@ module REG_EXE_MEM(
         // Output
         output reg [31:0] EXE_MEM_inst_in,
         output reg [31:0] EXE_MEM_PC = 0,
-        output reg [31:0] EXE_MEM_ALU_out,
+        output reg [31:0] EXE_MEM_ALU_out,  // ALU output
         output reg [31:0] EXE_MEM_Data_out,
         output reg EXE_MEM_mem_w,
         output reg [1:0] EXE_MEM_DatatoReg,

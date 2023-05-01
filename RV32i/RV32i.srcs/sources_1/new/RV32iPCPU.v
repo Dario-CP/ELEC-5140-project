@@ -223,10 +223,12 @@ module RV32iPCPU(
    //   None
    
     Get_rw_regs _rw_regs_ (
+        // Input:
         .inst_in(IF_ID_inst_in[31:0]),
-        .written_reg(IF_ID_written_reg),
-        .read_reg1(IF_ID_read_reg1),
-        .read_reg2(IF_ID_read_reg2)
+        // Output:
+        .written_reg(IF_ID_written_reg),    // Note that IF_ID_written_reg is just the destination register number obtained from decoding the instruction and is not in REG_IF_ID
+        .read_reg1(IF_ID_read_reg1),        // Note that IF_ID_read_reg1 is just the operand1 register number obtained from decoding the instruction and is not in REG_IF_ID
+        .read_reg2(IF_ID_read_reg2)         // Note that IF_ID_read_reg2 is just the operand2 register number obtained from decoding the instruction and is not in REG_IF_ID
         );
     Controler  Ctrl_Unit (
         // Input:
