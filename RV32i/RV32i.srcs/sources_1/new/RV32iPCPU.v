@@ -346,7 +346,7 @@ module RV32iPCPU(
     //   None
 
     // ALU Forwarding Multiplexer (A)
-    Mux2to1b32  _mux_forward_alu_a_ (
+    Mux4to1b32  _mux_forward_alu_a_ (
         .I0(ID_EXE_ALU_A[31:0]),    // Wire from REG_ID_EXE
         .I1(Wt_data[31:0]),         // Output from WB stage
         .I3(EXE_MEM_ALU_out[31:0]), // Output from MEM stage
@@ -355,7 +355,7 @@ module RV32iPCPU(
         );
     
     // ALU Forwarding Multiplexer (B)
-    Mux2to1b32  _mux_forward_alu_b_ (
+    Mux4to1b32  _mux_forward_alu_b_ (
         .I0(ID_EXE_ALU_B[31:0]),    // Wire from REG_ID_EXE
         .I1(Wt_data[31:0]),         // Output from WB stage
         .I3(EXE_MEM_ALU_out[31:0]), // Output from MEM stage
