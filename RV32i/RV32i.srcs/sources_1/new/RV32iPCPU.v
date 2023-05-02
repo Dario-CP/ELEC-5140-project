@@ -350,7 +350,7 @@ module RV32iPCPU(
         .I0(ID_EXE_ALU_A[31:0]),    // Wire from REG_ID_EXE
         .I1(Wt_data[31:0]),         // Output from WB stage
         .I3(EXE_MEM_ALU_out[31:0]), // Output from MEM stage
-        .s(forwarding_A_sig[1:0]    // Forwarding signal
+        .s(forwarding_A_sig[1:0]),  // Forwarding signal
         .o(ID_EXE_ALU_A_in[31:0])   // Wire to ALU
         );
     
@@ -359,7 +359,7 @@ module RV32iPCPU(
         .I0(ID_EXE_ALU_B[31:0]),    // Wire from REG_ID_EXE
         .I1(Wt_data[31:0]),         // Output from WB stage
         .I3(EXE_MEM_ALU_out[31:0]), // Output from MEM stage
-        .s(forwarding_B_sig[1:0]    // Forwarding signal
+        .s(forwarding_B_sig[1:0]),  // Forwarding signal
         .o(ID_EXE_ALU_B_in[31:0])   // Wire to ALU
         );
 
