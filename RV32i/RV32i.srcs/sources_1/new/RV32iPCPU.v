@@ -108,6 +108,7 @@ module RV32iPCPU(
     wire [31:0] MEM_WB_Data_in;
     wire [1:0] MEM_WB_DatatoReg;
     wire MEM_WB_RegWrite;
+    wire [4:0] MEM_WB_written_reg;  // TODO: check if works
    
     // Stall
     wire PC_dstall;
@@ -348,8 +349,8 @@ module RV32iPCPU(
     // ALU Forwarding Multiplexer (A)
     Mux4to1b32  _mux_forward_alu_a_ (
         .I0(ID_EXE_ALU_A[31:0]),    // Wire from REG_ID_EXE
-        .I1(Wt_data[31:0]),         // Output from WB stage
-        .I3(EXE_MEM_ALU_out[31:0]), // Output from MEM stage
+        .I1(Wt_data[31:0]),         // Output from MEM_WB Register
+        .I2(EXE_MEM_ALU_out[31:0]), // Output from EXE_MEM Register
         .s(forwarding_A_sig[1:0]),  // Forwarding signal
         .o(ID_EXE_ALU_A_in[31:0])   // Wire to ALU
         );
@@ -357,8 +358,8 @@ module RV32iPCPU(
     // ALU Forwarding Multiplexer (B)
     Mux4to1b32  _mux_forward_alu_b_ (
         .I0(ID_EXE_ALU_B[31:0]),    // Wire from REG_ID_EXE
-        .I1(Wt_data[31:0]),         // Output from WB stage
-        .I3(EXE_MEM_ALU_out[31:0]), // Output from MEM stage
+        .I1(Wt_data[31:0]),         // Output from MEM_WB Register
+        .I2(EXE_MEM_ALU_out[31:0]), // Output from EXE_MEM Register
         .s(forwarding_B_sig[1:0]),  // Forwarding signal
         .o(ID_EXE_ALU_B_in[31:0])   // Wire to ALU
         );
@@ -432,6 +433,7 @@ module RV32iPCPU(
         .ALU_out(EXE_MEM_ALU_out),
         .DatatoReg(EXE_MEM_DatatoReg),
         .RegWrite(EXE_MEM_RegWrite),
+        .written_reg(EXE_MEM_written_reg),  // TODO: check if works
         //// Comes from data memory
         .Data_in(data_in),
         
@@ -441,7 +443,8 @@ module RV32iPCPU(
         .MEM_WB_ALU_out(MEM_WB_ALU_out),
         .MEM_WB_DatatoReg(MEM_WB_DatatoReg),
         .MEM_WB_RegWrite(MEM_WB_RegWrite),
-        .MEM_WB_Data_in(MEM_WB_Data_in)
+        .MEM_WB_Data_in(MEM_WB_Data_in),
+        .MEM_WB_written_reg(MEM_WB_written_reg) // TODO: check if works
         );
 
     // WB:-------------------------------------------------------------------------------------------

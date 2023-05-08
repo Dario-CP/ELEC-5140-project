@@ -31,13 +31,16 @@ module REG_MEM_WB(
         input [1:0] DatatoReg,
         input RegWrite,
         input [31:0] Data_in,   // Data from memory (load)
+        input [4:0] written_reg,    // TODO: check if works
+
         // Output
         output reg [31:0] MEM_WB_inst_in,
         output reg [31:0] MEM_WB_PC = 0,
         output reg [31:0] MEM_WB_ALU_out,
         output reg [1:0] MEM_WB_DatatoReg,
         output reg MEM_WB_RegWrite,
-        output reg [31:0] MEM_WB_Data_in
+        output reg [31:0] MEM_WB_Data_in,
+        output reg [4:0] MEM_WB_written_reg // TODO: check if works
     );
     always @ (posedge clk or posedge rst) begin
         if (rst == 1) begin
@@ -47,6 +50,7 @@ module REG_MEM_WB(
             MEM_WB_DatatoReg    <= 2'b00;
             MEM_WB_RegWrite     <= 1'b0;
             MEM_WB_Data_in      <= 32'h00000000;
+            MEM_WB_written_reg  <= 5'b00000;
         end
         else if (CE) begin
             MEM_WB_inst_in      <= inst_in;
@@ -55,6 +59,7 @@ module REG_MEM_WB(
             MEM_WB_DatatoReg    <= DatatoReg;
             MEM_WB_RegWrite     <= RegWrite;
             MEM_WB_Data_in      <= Data_in;
+            MEM_WB_written_reg  <= written_reg;
         end
     end
 endmodule
