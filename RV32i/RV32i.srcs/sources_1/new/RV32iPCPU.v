@@ -67,6 +67,7 @@ module RV32iPCPU(
     wire [31:0] IF_ID_PC;
     wire [31:0] IF_ID_Data_out;
     wire IF_ID_mem_w;
+    wire IF_ID_mem_r;
     wire [4:0] IF_ID_written_reg;
     wire [4:0] IF_ID_read_reg1;
     wire [4:0] IF_ID_read_reg2;
@@ -123,7 +124,7 @@ module RV32iPCPU(
 
     Data_Stall _dstall_ (
         // Input:
-        .ID_EXE_mem_w(ID_EXE_mem_w),
+        .ID_EXE_mem_r(ID_EXE_mem_r),
 
         .IF_ID_read_reg1(IF_ID_read_reg1),
         .IF_ID_read_reg2(IF_ID_read_reg2),
@@ -246,11 +247,13 @@ module RV32iPCPU(
         .Branch(Branch[1:0]),
         .DatatoReg(DatatoReg[1:0]),
         .mem_w(IF_ID_mem_w),
+        .mem_r(IF_ID_mem_r),            // 1 if the instruction reads from memory (TODO: check if works)
         .RegWrite(RegWrite),
         .B_H_W(B_H_W),                  // not used yet
         .sign(sign)                     // not used yet
         );
 
+    // Get the data from the register file
     Regs U2 (.clk(clk),
              .rst(rst),
              .L_S(MEM_WB_RegWrite),             // From Write-Back stage
@@ -278,7 +281,8 @@ module RV32iPCPU(
         .s(ALUSrc_B[1:0]),
         .o(ALU_B[31:0]
         ));
-    assign IF_ID_Data_out = rdata_B;
+
+    assign IF_ID_Data_out = rdata_B;    // for sw instruction, data from rs2 register written into memory, but we need to take into account data forwarding
     ID_Zero_Generator _id_zero_ (.A(ALU_A), .B(ALU_B), .ALU_operation(ALU_Control), .zero(zero));
 
     REG_ID_EXE _id_exe_ (
@@ -295,6 +299,8 @@ module RV32iPCPU(
         .Data_out(IF_ID_Data_out),
         //// To MEM stage, for sw instruction, memor write enable signal
         .mem_w(IF_ID_mem_w),
+        //// To ID stage, to detect load-use data hazard (TODO: check if works)
+        .mem_r(IF_ID_mem_r),
         //// To WB stage, for choosing different data written back to register file
         .DatatoReg(DatatoReg),
         //// To WB stage, register file write valid
@@ -310,6 +316,7 @@ module RV32iPCPU(
         .ID_EXE_ALU_Control(ID_EXE_ALU_Control),
         .ID_EXE_Data_out(ID_EXE_Data_out),
         .ID_EXE_mem_w(ID_EXE_mem_w),
+        .ID_EXE_mem_r(ID_EXE_mem_r),    // TODO: check if works
         .ID_EXE_DatatoReg(ID_EXE_DatatoReg),
         .ID_EXE_RegWrite(ID_EXE_RegWrite),
         //// For Data Hazard

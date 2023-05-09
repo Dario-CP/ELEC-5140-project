@@ -31,6 +31,7 @@ module Controler(
 		output reg [1:0] Branch,
 		output reg RegWrite,
 		output reg mem_w,
+		output reg mem_r,	// TODO: check if works
 		output reg [4:0] ALU_Control,
 		output reg [1:0] B_H_W,
 		output reg sign
@@ -42,6 +43,7 @@ module Controler(
 		Branch = 0;
 		RegWrite = 0;
 		mem_w = 0;
+		mem_r = 0;	// TODO: check if works
 		B_H_W = 2'b0; // default: immediate is a word
 		sign = 1'b1; // default: signed extension to "write_data"
 		case(OPcode)
@@ -124,6 +126,7 @@ module Controler(
 				ALUSrc_B = 2'b01;
 				DatatoReg = 2'b01;
 				RegWrite = 1;
+				mem_r = 1;	// TODO: check if works
 				case (Fun1)
 				    3'b000: begin // LB
 				        B_H_W = 2'b01; // byte

@@ -44,7 +44,7 @@ module Data_Stall(
         */
 
         // Input:
-        input ID_EXE_mem_w,
+        input ID_EXE_mem_r,
         input [4:0] ID_EXE_written_reg,
 
         input [4:0] IF_ID_read_reg1,
@@ -59,7 +59,7 @@ module Data_Stall(
         PC_dstall = 0;
         IF_ID_dstall = 0;
         ID_EXE_dstall = 0;
-        if (ID_EXE_mem_w
+        if (ID_EXE_mem_r
         && ((ID_EXE_written_reg == IF_ID_read_reg1)
         || (ID_EXE_written_reg == IF_ID_read_reg2))) begin
             PC_dstall = 1;

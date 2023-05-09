@@ -33,6 +33,7 @@ module REG_ID_EXE(
         input [4:0] ALU_Control,
         input [31:0] Data_out,
         input mem_w,
+        input mem_r,    // TODO: check if works
         input [1:0] DatatoReg,
         input RegWrite,
         
@@ -47,6 +48,7 @@ module REG_ID_EXE(
         output reg [4:0] ID_EXE_ALU_Control,
         output reg [31:0] ID_EXE_Data_out,
         output reg ID_EXE_mem_w,
+        output reg ID_EXE_mem_r,    // TODO: check if works
         output reg [1:0] ID_EXE_DatatoReg,
         output reg ID_EXE_RegWrite,
         
@@ -64,6 +66,7 @@ module REG_ID_EXE(
             ID_EXE_ALU_Control  <= 5'b00000;
             ID_EXE_Data_out     <= 32'h00000000;
             ID_EXE_mem_w        <= 1'b0;
+            ID_EXE_mem_r        <= 1'b0;    // TODO: check if works
             ID_EXE_DatatoReg    <= 2'b00;
             ID_EXE_RegWrite     <= 1'b0;
             
@@ -79,6 +82,7 @@ module REG_ID_EXE(
             ID_EXE_ALU_Control  <= ALU_Control;
             ID_EXE_Data_out     <= Data_out;
             ID_EXE_mem_w        <= mem_w;
+            ID_EXE_mem_r        <= mem_r;    // TODO: check if works
             ID_EXE_DatatoReg    <= DatatoReg;
             ID_EXE_RegWrite     <= RegWrite;
             
