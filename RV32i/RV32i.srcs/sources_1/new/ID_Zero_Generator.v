@@ -24,7 +24,7 @@ module ID_Zero_Generator(
 	input [31:0] A, 
 	input [31:0] B,
 	input [4:0] ALU_operation,
-	output zero
+	output zero	// If zero==1, then the branch is taken
     );
     reg [31:0] res;
 	parameter one = 32'h00000001, zero_0 = 32'h00000000;

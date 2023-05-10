@@ -110,7 +110,7 @@ module Forward_Unit(
         // MEM hazard (only if there is no EX hazard)
         // Rd = Rs
         if ((MEM_WB_RegWrite && MEM_WB_written_reg != 0) 
-        && (!(EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == ID_EXE_read_reg1))) 
+        && (!(EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == ID_EXE_read_reg1)))   // not EX hazard
         && (MEM_WB_written_reg == ID_EXE_read_reg1)) begin
             forwarding_A_sig[0] = 1'b1;   // Signal 1 to forward
         end
@@ -120,12 +120,79 @@ module Forward_Unit(
 
         // Rd = Rt
         if ((MEM_WB_RegWrite && MEM_WB_written_reg != 0) 
-        && (!(EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == ID_EXE_read_reg2))) 
+        && (!(EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == ID_EXE_read_reg2)))   // not EX hazard
         && (MEM_WB_written_reg == ID_EXE_read_reg2)) begin
             forwarding_B_sig[0] = 1'b1;   // Signal 1 to forward
         end
         else begin
             forwarding_B_sig[0] = 1'b0;   // Signal 0 to not forward
         end
+
+        /*
+        //////////////////////////// DATA FORWARDING FOR rdata_A and rdata_B ////////////////////////////
+
+        // Hazard between ID/EXE and IF/ID
+        // Rd = Rs (rdata_A should take the forwarded value from ID_EXE)
+        if (ID_EXE_written_reg != 0
+        && (ID_EXE_written_reg == IF_ID_read_reg1)) begin
+            //
+        end
+        else begin
+            //
+        end
+
+        // Rd = Rt (rdata_B should take the forwarded value from ID_EXE)
+        if (ID_EXE_written_reg != 0
+        && (ID_EXE_written_reg == IF_ID_read_reg2)) begin
+            //
+        end
+        else begin
+            //
+        end
+
+        // Hazard between EXE/MEM and IF/ID
+        // Rd = Rs (rdata_A should take the forwarded value from EXE_MEM)
+        if (EXE_MEM_written_reg != 0
+        && (!(ID_EXE_written_reg != 0 && (ID_EXE_written_reg == IF_ID_read_reg1)))  // No Hazard between ID/EXE and IF/ID
+        && (EXE_MEM_written_reg == IF_ID_read_reg1)) begin
+            //
+        end
+        else begin
+            //
+        end
+
+        // Rd = Rt (rdata_B should take the forwarded value from EXE_MEM)
+        if (EXE_MEM_written_reg != 0
+        && (!(ID_EXE_written_reg != 0 && (ID_EXE_written_reg == IF_ID_read_reg2)))  // No Hazard between ID/EXE and IF/ID
+        && (EXE_MEM_written_reg == IF_ID_read_reg2)) begin
+            //
+        end
+        else begin
+            //
+        end
+
+        // Hazard between MEM/WB and IF/ID
+        // Rd = Rs (rdata_A should take the forwarded value from MEM_WB)
+        if (MEM_WB_written_reg != 0
+        && (!(ID_EXE_written_reg != 0 && (ID_EXE_written_reg == IF_ID_read_reg1)))  // No Hazard between ID/EXE and IF/ID
+        && (!(EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == IF_ID_read_reg1)))    // No Hazard between ID/EXE and IF/ID
+        && (MEM_WB_written_reg == IF_ID_read_reg1)) begin
+            //
+        end
+        else begin
+            //
+        end
+
+        // Rd = Rt (rdata_B should take the forwarded value from MEM_WB)
+        if (MEM_WB_written_reg != 0
+        && (!(ID_EXE_written_reg != 0 && (ID_EXE_written_reg == IF_ID_read_reg2)))  // No Hazard between ID/EXE and IF/ID
+        && (!(EXE_MEM_written_reg != 0 && (EXE_MEM_written_reg == IF_ID_read_reg2)))    // No Hazard between ID/EXE and IF/ID
+        && (MEM_WB_written_reg == IF_ID_read_reg2)) begin
+            //
+        end
+        else begin
+            //
+        end
+        */
     end
 endmodule    

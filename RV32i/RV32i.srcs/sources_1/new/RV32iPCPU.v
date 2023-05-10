@@ -77,8 +77,9 @@ module RV32iPCPU(
     wire [31:0] ID_EXE_PC;
     wire [31:0] ID_EXE_ALU_A;
     wire [31:0] ID_EXE_ALU_B;
-    wire [31:0] ID_EXE_ALU_A_in;
-    wire [31:0] ID_EXE_ALU_B_in;
+    wire [31:0] ID_EXE_ALU_A_forward;
+    wire [31:0] ID_EXE_ALU_B_forward;
+    wire [31:0] ID_EXE_Data_out_forward;
     wire [4:0] ID_EXE_ALU_Control;
     wire [31:0] ID_EXE_Data_out;
     wire ID_EXE_mem_w;
@@ -113,6 +114,7 @@ module RV32iPCPU(
    
     // Stall
     wire PC_dstall;
+    wire PC_cstall;
     wire IF_ID_cstall;
     wire IF_ID_dstall;
     wire ID_EXE_dstall;
@@ -138,7 +140,11 @@ module RV32iPCPU(
         );
         
     Control_Stall _cstall_ (
-        .Branch(Branch[1:0]),
+        // Input:
+        // .Branch(Branch[1:0]),        // Old
+        .OPcode(IF_ID_inst_in[6:0]),    // New
+        // Output:
+        .PC_cstall(PC_cstall),
         .IF_ID_cstall(IF_ID_cstall)
         );
 
@@ -164,7 +170,8 @@ module RV32iPCPU(
         .D(PC_wb[31:0]),
         .rst(rst),
         .Q(PC_out[31:0]),
-        .PC_dstall(PC_dstall)
+        .PC_dstall(PC_dstall),
+        .PC_cstall(PC_cstall)
         );
     add_32  ADD_Branch (
         .a(IF_ID_PC[31:0]),         // use the "PC" from ID stage
@@ -182,10 +189,10 @@ module RV32iPCPU(
         .c(add_jalr_out[31:0])
         );
     Mux4to1b32  MUX5 (
-        .I0(PC_out[31:0] + 32'b0100),   // From IF stage
-        .I1(add_branch_out[31:0]),      // Containing "PC" from ID stage
-        .I2(add_jal_out[31:0]),         // From ID stage
-        .I3(add_jalr_out[31:0]),        // From ID stage
+        .I0(PC_out[31:0] + 32'b0100),   // From IF stage (PC+4)             00
+        .I1(add_branch_out[31:0]),      // Containing "PC" from ID stage    01
+        .I2(add_jal_out[31:0]),         // From ID stage                    10
+        .I3(add_jalr_out[31:0]),        // From ID stage                    11
         .s(Branch[1:0]),                // From ID
         .o(PC_wb[31:0])
         );
@@ -264,26 +271,10 @@ module RV32iPCPU(
              .rdata_A(rdata_A[31:0]),
              .rdata_B(rdata_B[31:0])
              );
-    SignExt _signed_ext_ (.inst_in(IF_ID_inst_in), .imm_32(Imm_32));
 
-    Mux2to1b32  _alu_source_A_ (
-        .I0(rdata_A[31:0]),
-        .I1(Imm_32[31:0]),   // not used 
-        .s(ALUSrc_A),
-        .o(ALU_A[31:0])
-        );
+    assign IF_ID_Data_out = rdata_B;    // for sw instruction, data from rs2 register written into memory, but we need to take into account data forwarding (_mux_forward_data_out_)
 
-    Mux4to1b32  _alu_source_B_ (
-        .I0(rdata_B[31:0]),
-        .I1(Imm_32[31:0]),
-        .I2(),
-        .I3(),
-        .s(ALUSrc_B[1:0]),
-        .o(ALU_B[31:0]
-        ));
-
-    assign IF_ID_Data_out = rdata_B;    // for sw instruction, data from rs2 register written into memory, but we need to take into account data forwarding
-    ID_Zero_Generator _id_zero_ (.A(ALU_A), .B(ALU_B), .ALU_operation(ALU_Control), .zero(zero));
+    // ID_Zero_Generator _id_zero_ (.A(ALU_A), .B(ALU_B), .ALU_operation(ALU_Control), .zero(zero));    // Old (Now performed in ALU)
 
     REG_ID_EXE _id_exe_ (
         .clk(clk), .rst(rst), .CE(V5), .ID_EXE_dstall(ID_EXE_dstall),
@@ -291,8 +282,8 @@ module RV32iPCPU(
         .inst_in(IF_ID_inst_in),
         .PC(IF_ID_PC),
         //// To EXE stage, ALU Operands A & B
-        .ALU_A(ALU_A),
-        .ALU_B(ALU_B),
+        .ALU_A(rdata_A[31:0]),
+        .ALU_B(rdata_B[31:0]),
         //// To EXE stage, ALU operation control signal
         .ALU_Control(ALU_Control),
         //// To MEM stage, for sw instruction, data from rs2 register written into memory
@@ -353,13 +344,15 @@ module RV32iPCPU(
     // Out:
     //   None
 
+    SignExt _signed_ext_ (.inst_in(ID_EXE_inst_in), .imm_32(Imm_32));   // Moved from ID stage to EXE stage
+
     // ALU Forwarding Multiplexer (A)
     Mux4to1b32  _mux_forward_alu_a_ (
         .I0(ID_EXE_ALU_A[31:0]),    // Wire from REG_ID_EXE
         .I1(Wt_data[31:0]),         // Output from MEM_WB Register
         .I2(EXE_MEM_ALU_out[31:0]), // Output from EXE_MEM Register
         .s(forwarding_A_sig[1:0]),  // Forwarding signal
-        .o(ID_EXE_ALU_A_in[31:0])   // Wire to ALU
+        .o(ID_EXE_ALU_A_forward[31:0])   // Wire to ALU
         );
     
     // ALU Forwarding Multiplexer (B)
@@ -368,16 +361,43 @@ module RV32iPCPU(
         .I1(Wt_data[31:0]),         // Output from MEM_WB Register
         .I2(EXE_MEM_ALU_out[31:0]), // Output from EXE_MEM Register
         .s(forwarding_B_sig[1:0]),  // Forwarding signal
-        .o(ID_EXE_ALU_B_in[31:0])   // Wire to ALU
+        .o(ID_EXE_ALU_B_forward[31:0])   // Wire to ALU
+        );
+    
+    // Data Out Forwarding Multiplexer
+    Mux4to1b32  _mux_forward_data_out_ (
+        .I0(ID_EXE_Data_out[31:0]),     // Wire from REG_ID_EXE
+        .I1(Wt_data[31:0]),             // Output from MEM_WB Register
+        .I2(EXE_MEM_ALU_out[31:0]),    // Output from EXE_MEM Register
+        .s(forwarding_B_sig[1:0]),   // Forwarding signal
+        .o(ID_EXE_Data_out_forward[31:0])   // Wire to EXE_MEM Register
+        );
+    
+    Mux2to1b32  _alu_source_A_ (    // Moved from ID stage to EXE stage
+        .I0(ID_EXE_ALU_A_forward[31:0]),
+        .I1(Imm_32[31:0]),   // not used 
+        .s(ALUSrc_A),
+        .o(ALU_A[31:0])
         );
 
+    Mux4to1b32  _alu_source_B_ (    // Moved from ID stage to EXE stage
+        .I0(ID_EXE_ALU_B_forward[31:0]),
+        .I1(Imm_32[31:0]),
+        .I2(),
+        .I3(),
+        .s(ALUSrc_B[1:0]),
+        .o(ALU_B[31:0]
+        ));
+
     ALU _alualu_ (
-        .A(ID_EXE_ALU_A_in[31:0]),
-        .B(ID_EXE_ALU_B_in[31:0]),
+        // Input:
+        .A(ALU_A[31:0]),
+        .B(ALU_B[31:0]),
         .ALU_operation(ID_EXE_ALU_Control[4:0]),
+        // Output:
         .res(ID_EXE_ALU_out[31:0]),
         .overflow(),
-        .zero()
+        .zero(zero) // Now zero is calculated by ALU (connected to Ctrl_Unit to determine branch)
         ); 
 
     REG_EXE_MEM _exe_mem_ (
@@ -387,7 +407,7 @@ module RV32iPCPU(
         .PC(ID_EXE_PC),
         //// To MEM stage
         .ALU_out(ID_EXE_ALU_out),
-        .Data_out(ID_EXE_Data_out),
+        .Data_out(ID_EXE_Data_out_forward),
         .mem_w(ID_EXE_mem_w),
         //// To WB stage
         .DatatoReg(ID_EXE_DatatoReg),

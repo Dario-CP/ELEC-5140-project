@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0 ps"></ZoomStartTime>
-      <ZoomEndTime time="8 ps"></ZoomEndTime>
-      <Cursor1Time time="11 ps"></Cursor1Time>
+      <ZoomStartTime time="8 ps"></ZoomStartTime>
+      <ZoomEndTime time="34 ps"></ZoomEndTime>
+      <Cursor1Time time="24 ps"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="218"></NameColumnWidth>
-      <ValueColumnWidth column_width="85"></ValueColumnWidth>
+      <ValueColumnWidth column_width="65"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="22" />
+   <WVObjectSize size="28" />
    <wvobject fp_name="/Top/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -263,13 +263,17 @@
       <obj_property name="ElementShortName">ID_EXE_mem_r</obj_property>
       <obj_property name="ObjectShortName">ID_EXE_mem_r</obj_property>
    </wvobject>
-   <wvobject fp_name="/Top/_rv32ipcpu_/PC_dstall" type="logic">
-      <obj_property name="ElementShortName">PC_dstall</obj_property>
-      <obj_property name="ObjectShortName">PC_dstall</obj_property>
+   <wvobject fp_name="/Top/_rv32ipcpu_/Ctrl_Unit/mem_r" type="logic">
+      <obj_property name="ElementShortName">mem_r</obj_property>
+      <obj_property name="ObjectShortName">mem_r</obj_property>
    </wvobject>
    <wvobject fp_name="/Top/_rv32ipcpu_/IF_ID_cstall" type="logic">
       <obj_property name="ElementShortName">IF_ID_cstall</obj_property>
       <obj_property name="ObjectShortName">IF_ID_cstall</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/PC_dstall" type="logic">
+      <obj_property name="ElementShortName">PC_dstall</obj_property>
+      <obj_property name="ObjectShortName">PC_dstall</obj_property>
    </wvobject>
    <wvobject fp_name="/Top/_rv32ipcpu_/IF_ID_dstall" type="logic">
       <obj_property name="ElementShortName">IF_ID_dstall</obj_property>
@@ -278,5 +282,30 @@
    <wvobject fp_name="/Top/_rv32ipcpu_/ID_EXE_dstall" type="logic">
       <obj_property name="ElementShortName">ID_EXE_dstall</obj_property>
       <obj_property name="ObjectShortName">ID_EXE_dstall</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_alualu_/flip_zero" type="logic">
+      <obj_property name="ElementShortName">flip_zero</obj_property>
+      <obj_property name="ObjectShortName">flip_zero</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_alualu_/zero" type="logic">
+      <obj_property name="ElementShortName">zero</obj_property>
+      <obj_property name="ObjectShortName">zero</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/Ctrl_Unit/zero" type="logic">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">zero</obj_property>
+      <obj_property name="ObjectShortName">zero</obj_property>
+      <obj_property name="label">zero (in to contoler)</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/Ctrl_Unit/OPcode" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">OPcode[6:0]</obj_property>
+      <obj_property name="ObjectShortName">OPcode[6:0]</obj_property>
+      <obj_property name="label">OPcode[6:0] (in to controller)</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/Ctrl_Unit/Branch" type="array">
+      <obj_property name="ElementShortName">Branch[1:0]</obj_property>
+      <obj_property name="ObjectShortName">Branch[1:0]</obj_property>
    </wvobject>
 </wave_config>

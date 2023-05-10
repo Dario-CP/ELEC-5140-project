@@ -26,8 +26,9 @@ module ALU(
 	input [4:0] ALU_operation,
 	output reg signed [31:0] res,
 	output reg overflow,
-	output wire zero
+	output wire zero	// If zero==1 and it is a branch instruction, then the branch is taken
     );
+	reg flip_zero;	// If flip_zero==1, we need to flip the zero signal before outputing
 	wire res_temp;
 	assign res_temp = res;
 	parameter one = 32'h00000001, zero_0 = 32'h00000000;
@@ -36,6 +37,7 @@ module ALU(
 	assign B_temp = B;
 	// always @ (A or B or ALU_operation) begin
     always @ (*) begin
+		flip_zero = 0;
 		case (ALU_operation)
 			5'b00000: begin	// and
 				res = A & B;
@@ -51,7 +53,7 @@ module ALU(
 					overflow = 1;
 				else overflow = 0;
 			end
-			5'b00011: begin	// sub
+			5'b00011: begin	// sub (and BEQ)
 				res = A_temp - B_temp;
 				if ((A[31] == 1 && B[31] == 0 && res[31] == 0) || (A[31] == 0 && B[31] == 1 && res[31] == 1))
 					overflow = 1;
@@ -61,12 +63,14 @@ module ALU(
                 res = A ^ B;
                 overflow = 0;
             end
-			5'b00101: begin	// SLT
+			5'b00101: begin	// SLT (and BLT)
 				res = (A_temp < B_temp) ? one : zero_0;
-				overflow = 0;
+				flip_zero = 1;
+				overflow = 0;				
 			end
-            5'b00110: begin // SLTU
+            5'b00110: begin // SLTU (and BLTU)
                 res = (A < B) ? one : zero_0;
+				flip_zero = 1;
                 overflow = 0;
             end
             5'b00111: begin // SLL
@@ -80,18 +84,18 @@ module ALU(
             5'b01001: begin // SRA
                 res = (A_temp >> B);
                 overflow = 0;
-            end
+			end
 			5'b01010: begin // BGE
-                res = (A_temp >= B_temp) ? one : zero_0;
+                res = (A_temp >= B_temp) ? zero_0 : one;
                 overflow = 0;
-            end
+			end
             5'b01011: begin // BGEU
-                res = (A >= B) ? one : zero_0;
+                res = (A >= B) ? zero_0 : one;
                 overflow = 0;
             end
 			default: res = 32'hx;
 		endcase
 	end
-	assign zero = (res == 0) ? 1 : 0;
+	assign zero = (res == 0) ? ~flip_zero : flip_zero;
 
 endmodule
