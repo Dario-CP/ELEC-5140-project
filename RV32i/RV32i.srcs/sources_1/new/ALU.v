@@ -24,9 +24,10 @@ module ALU(
 	input [31:0] A,
 	input [31:0] B,
 	input [4:0] ALU_operation,
+	input is_bne,
 	output reg signed [31:0] res,
 	output reg overflow,
-	output wire zero	// If zero==1 and it is a branch instruction, then the branch is taken
+	output wire zero_correct	// If zero_correct==1 and it is a branch instruction, then the branch should have been taken
     );
 	reg flip_zero;	// If flip_zero==1, we need to flip the zero signal before outputing
 	wire res_temp;
@@ -53,11 +54,14 @@ module ALU(
 					overflow = 1;
 				else overflow = 0;
 			end
-			5'b00011: begin	// sub (and BEQ)
+			5'b00011: begin	// sub (and BEQ and BNE)
 				res = A_temp - B_temp;
 				if ((A[31] == 1 && B[31] == 0 && res[31] == 0) || (A[31] == 0 && B[31] == 1 && res[31] == 1))
 					overflow = 1;
 				else overflow = 0;
+				// If it is a BNE, flip the zero signal
+				if (is_bne == 1'b1)
+					flip_zero = 1;
 			end
             5'b00100: begin // XOR
                 res = A ^ B;
@@ -65,12 +69,12 @@ module ALU(
             end
 			5'b00101: begin	// SLT (and BLT)
 				res = (A_temp < B_temp) ? one : zero_0;
-				flip_zero = 1;
+				flip_zero = 1;	// For BLT
 				overflow = 0;				
 			end
             5'b00110: begin // SLTU (and BLTU)
                 res = (A < B) ? one : zero_0;
-				flip_zero = 1;
+				flip_zero = 1;	// For BLTU
                 overflow = 0;
             end
             5'b00111: begin // SLL
@@ -96,6 +100,6 @@ module ALU(
 			default: res = 32'hx;
 		endcase
 	end
-	assign zero = (res == 0) ? ~flip_zero : flip_zero;
+	assign zero_correct = (res == 0) ? ~flip_zero : flip_zero;
 
 endmodule

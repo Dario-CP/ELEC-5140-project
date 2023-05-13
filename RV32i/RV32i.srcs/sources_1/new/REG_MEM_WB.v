@@ -31,7 +31,7 @@ module REG_MEM_WB(
         input [1:0] DatatoReg,
         input RegWrite,
         input [31:0] Data_in,   // Data from memory (load)
-        input [4:0] written_reg,    // TODO: check if works
+        input [4:0] written_reg,
 
         // Output
         output reg [31:0] MEM_WB_inst_in,
@@ -40,7 +40,7 @@ module REG_MEM_WB(
         output reg [1:0] MEM_WB_DatatoReg,
         output reg MEM_WB_RegWrite,
         output reg [31:0] MEM_WB_Data_in,
-        output reg [4:0] MEM_WB_written_reg // TODO: check if works
+        output reg [4:0] MEM_WB_written_reg
     );
     always @ (posedge clk or posedge rst) begin
         if (rst == 1) begin

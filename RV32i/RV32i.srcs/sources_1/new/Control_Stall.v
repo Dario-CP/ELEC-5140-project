@@ -40,8 +40,8 @@ module Control_Stall(
         IF_ID_cstall = 1'b0;
         PC_cstall = 1'b0;
         if (OPcode == 7'b1100011) begin
-            IF_ID_cstall = 1'b1;
-            PC_cstall = 1'b1;
+            IF_ID_cstall = 1'b0;    // 0 to not stall
+            PC_cstall = 1'b0;       // 0 to not stall
         end
     end
 endmodule

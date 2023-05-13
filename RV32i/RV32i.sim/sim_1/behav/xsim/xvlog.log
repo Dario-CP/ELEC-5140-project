@@ -1,5 +1,7 @@
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/super/Desktop/github/ELEC-5140-project/RV32i/RV32i.srcs/sources_1/new/ALU.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module ALU
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/super/Desktop/github/ELEC-5140-project/RV32i/RV32i.srcs/sources_1/new/Branch_Checker.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module Branch_Checker
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/super/Desktop/github/ELEC-5140-project/RV32i/RV32i.srcs/sources_1/new/Control_Stall.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module Control_Stall
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/super/Desktop/github/ELEC-5140-project/RV32i/RV32i.srcs/sources_1/new/Controler.v" into library xil_defaultlib
@@ -10,6 +12,8 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/super/Desktop/github/ELEC-
 INFO: [VRFC 10-311] analyzing module Forward_Unit
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/super/Desktop/github/ELEC-5140-project/RV32i/RV32i.srcs/sources_1/new/Get_rw_regs.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module Get_rw_regs
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/super/Desktop/github/ELEC-5140-project/RV32i/RV32i.srcs/sources_1/new/Gshare_Predictor.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module Gshare_Predictor
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/super/Desktop/github/ELEC-5140-project/RV32i/RV32i.srcs/sources_1/new/LUI_or_AUIPC.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module LUI_or_AUIPC
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/super/Desktop/github/ELEC-5140-project/RV32i/RV32i.srcs/sources_1/new/Mux2to1b32.v" into library xil_defaultlib

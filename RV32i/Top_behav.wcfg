@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="8 ps"></ZoomStartTime>
-      <ZoomEndTime time="34 ps"></ZoomEndTime>
-      <Cursor1Time time="24 ps"></Cursor1Time>
+      <ZoomStartTime time="99 ps"></ZoomStartTime>
+      <ZoomEndTime time="118 ps"></ZoomEndTime>
+      <Cursor1Time time="112 ps"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="218"></NameColumnWidth>
-      <ValueColumnWidth column_width="65"></ValueColumnWidth>
+      <NameColumnWidth column_width="197"></NameColumnWidth>
+      <ValueColumnWidth column_width="95"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="28" />
+   <WVObjectSize size="41" />
    <wvobject fp_name="/Top/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -252,6 +252,7 @@
       <obj_property name="ObjectShortName">forwarding_A_sig[1:0]</obj_property>
       <obj_property name="CustomSignalColor">#FF00FF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/Top/_rv32ipcpu_/_forward_unit_/forwarding_B_sig" type="array">
       <obj_property name="ElementShortName">forwarding_B_sig[1:0]</obj_property>
@@ -287,25 +288,80 @@
       <obj_property name="ElementShortName">flip_zero</obj_property>
       <obj_property name="ObjectShortName">flip_zero</obj_property>
    </wvobject>
-   <wvobject fp_name="/Top/_rv32ipcpu_/_alualu_/zero" type="logic">
-      <obj_property name="ElementShortName">zero</obj_property>
-      <obj_property name="ObjectShortName">zero</obj_property>
-   </wvobject>
-   <wvobject fp_name="/Top/_rv32ipcpu_/Ctrl_Unit/zero" type="logic">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">zero</obj_property>
-      <obj_property name="ObjectShortName">zero</obj_property>
-      <obj_property name="label">zero (in to contoler)</obj_property>
-   </wvobject>
-   <wvobject fp_name="/Top/_rv32ipcpu_/Ctrl_Unit/OPcode" type="array">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">OPcode[6:0]</obj_property>
-      <obj_property name="ObjectShortName">OPcode[6:0]</obj_property>
-      <obj_property name="label">OPcode[6:0] (in to controller)</obj_property>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_predictor_/Fun1" type="array">
+      <obj_property name="ElementShortName">Fun1[2:0]</obj_property>
+      <obj_property name="ObjectShortName">Fun1[2:0]</obj_property>
       <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/Top/_rv32ipcpu_/Ctrl_Unit/Branch" type="array">
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_predictor_/is_branch" type="logic">
+      <obj_property name="ElementShortName">is_branch</obj_property>
+      <obj_property name="ObjectShortName">is_branch</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_checker_/zero_correct" type="logic">
+      <obj_property name="ElementShortName">zero_correct</obj_property>
+      <obj_property name="ObjectShortName">zero_correct</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_checker_/ID_EXE_zero_prediction" type="logic">
+      <obj_property name="ElementShortName">ID_EXE_zero_prediction</obj_property>
+      <obj_property name="ObjectShortName">ID_EXE_zero_prediction</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_predictor_/zero_prediction" type="logic">
+      <obj_property name="ElementShortName">zero_prediction</obj_property>
+      <obj_property name="ObjectShortName">zero_prediction</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_predictor_/correct_prediction" type="logic">
+      <obj_property name="ElementShortName">correct_prediction</obj_property>
+      <obj_property name="ObjectShortName">correct_prediction</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_predictor_/Branch" type="array">
       <obj_property name="ElementShortName">Branch[1:0]</obj_property>
       <obj_property name="ObjectShortName">Branch[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_predictor_/zero_prediction" type="logic">
+      <obj_property name="ElementShortName">zero_prediction</obj_property>
+      <obj_property name="ObjectShortName">zero_prediction</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_predictor_/PHT" type="array">
+      <obj_property name="ElementShortName">PHT[0:255][1:0]</obj_property>
+      <obj_property name="ObjectShortName">PHT[0:255][1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_predictor_/index" type="array">
+      <obj_property name="ElementShortName">index[7:0]</obj_property>
+      <obj_property name="ObjectShortName">index[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_predictor_/PC" type="array">
+      <obj_property name="ElementShortName">PC[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PC[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_predictor_/BHR" type="array">
+      <obj_property name="ElementShortName">BHR[7:0]</obj_property>
+      <obj_property name="ObjectShortName">BHR[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_checker_/zero_correct" type="logic">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">zero_correct</obj_property>
+      <obj_property name="ObjectShortName">zero_correct</obj_property>
+      <obj_property name="label">zero_correct (from ALU, 2 clk after)</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_branch_checker_/correct_prediction" type="logic">
+      <obj_property name="ElementShortName">correct_prediction</obj_property>
+      <obj_property name="ObjectShortName">correct_prediction</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_alualu_/A_temp" type="array">
+      <obj_property name="ElementShortName">A_temp[31:0]</obj_property>
+      <obj_property name="ObjectShortName">A_temp[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_alualu_/B_temp" type="array">
+      <obj_property name="ElementShortName">B_temp[31:0]</obj_property>
+      <obj_property name="ObjectShortName">B_temp[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_alualu_/ALU_operation" type="array">
+      <obj_property name="ElementShortName">ALU_operation[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ALU_operation[4:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
 </wave_config>

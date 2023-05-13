@@ -24,14 +24,12 @@ module Controler(
 		input [6:0] OPcode,
 		input [2:0] Fun1,
 		input [6:0] Fun2,
-		input wire zero,
 		output reg ALUSrc_A,
 		output reg [1:0] ALUSrc_B,
 		output reg [1:0] DatatoReg,
-		output reg [1:0] Branch,
 		output reg RegWrite,
 		output reg mem_w,
-		output reg mem_r,	// TODO: check if works
+		output reg mem_r,
 		output reg [4:0] ALU_Control,
 		output reg [1:0] B_H_W,
 		output reg sign
@@ -40,10 +38,9 @@ module Controler(
 		ALUSrc_B = 0;
 		ALUSrc_A = 0;
 		DatatoReg = 2'b0;
-		Branch = 0;
 		RegWrite = 0;
 		mem_w = 0;
-		mem_r = 0;	// TODO: check if works
+		mem_r = 0;
 		B_H_W = 2'b0; // default: immediate is a word
 		sign = 1'b1; // default: signed extension to "write_data"
 		case(OPcode)
@@ -126,7 +123,7 @@ module Controler(
 				ALUSrc_B = 2'b01;
 				DatatoReg = 2'b01;
 				RegWrite = 1;
-				mem_r = 1;	// TODO: check if works
+				mem_r = 1;
 				case (Fun1)
 				    3'b000: begin // LB
 				        B_H_W = 2'b01; // byte
@@ -163,37 +160,29 @@ module Controler(
 			    case (Fun1)
 			        3'b000: begin // BEQ
 			            ALU_Control = 5'b00011; 
-			            Branch = {1'b0, zero};
 			        end 
 			        3'b001: begin // BNE
 			            ALU_Control = 5'b00011;
-			            Branch = {1'b0, ~zero};
 			        end
 			        3'b100: begin // BLT
 			            ALU_Control = 5'b00101;
-			            Branch = {1'b0, zero};
 			        end
 			        3'b101: begin // BGE
 			            ALU_Control = 5'b01010;
-			            Branch = {1'b0, zero};
 			        end
 			        3'b110: begin // BLTU
 			            ALU_Control = 5'b00110;
-			            Branch = {1'b0, zero}; 
 			        end
 			        3'b111: begin // BGEU
 			            ALU_Control = 5'b01011;
-			            Branch = {1'b0, zero};
 			        end
 			    endcase
 			end
 			7'b1101111: begin	// jal
-				Branch = 2'b10;
 				DatatoReg = 2'b11;
 				RegWrite = 1;
 			end
             7'b1100111: begin   // jalr
-                Branch = 2'b11;
                 DatatoReg = 2'b11;
                 RegWrite = 1;
             end
@@ -209,4 +198,3 @@ module Controler(
 		endcase
 	end
 endmodule
-
