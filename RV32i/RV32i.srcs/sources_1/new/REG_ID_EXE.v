@@ -25,6 +25,7 @@ module REG_ID_EXE(
         input rst,
         input CE,
         input ID_EXE_dstall,
+        input ID_EXE_cstall,
         
         input [31:0] inst_in,
         input [31:0] PC,
@@ -70,7 +71,7 @@ module REG_ID_EXE(
     );
 
     always @ (posedge clk or posedge rst) begin
-        if (rst == 1 || ID_EXE_dstall == 1) begin
+        if (rst == 1 || ID_EXE_dstall == 1 || ID_EXE_cstall == 1) begin
             ID_EXE_inst_in      <= 32'h00000013;    // nop
             ID_EXE_PC           <= 32'h00000000;
             ID_EXE_Imm_32       <= 32'h00000000;
