@@ -14,8 +14,8 @@ Compiling module xil_defaultlib.SignExt
 Compiling module xil_defaultlib.REG32
 Compiling module xil_defaultlib.Gshare_Predictor
 Compiling module xil_defaultlib.add_32
-Compiling module xil_defaultlib.Mux4to1b32
 Compiling module xil_defaultlib.Mux2to1b32
+Compiling module xil_defaultlib.Mux4to1b32
 Compiling module xil_defaultlib.REG_IF_ID
 Compiling module xil_defaultlib.Get_rw_regs
 Compiling module xil_defaultlib.Controler

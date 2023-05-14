@@ -4,11 +4,11 @@ addi s1, x0, 5 // int tsteps = 5;
 addi s2, x0, 0x200 // starting addr of array A
 addi s3, x0, 0x300 // starting addr of array B
 
-jal ra, init_array
+jal ra, init_array  // 0b0000ef
 
-jal ra, kernel
+jal ra, kernel      // 008000ef
 
-jal ra, continue
+jal ra, continue    // 0d8000ef
 
 // ----------------------------
 kernel:
@@ -66,7 +66,7 @@ jalr x0, ra, 0
 
 // ----------------------------
 init_array:
-addi t0, x0, 0 // t0: i
+addi t0, x0, 0 // t0: i         // 00000293
 addi t3, s2, 0 // addr of A
 addi t4, s3, 0 // addr of B
 init_loop_i:
@@ -78,7 +78,7 @@ addi t3, t3, 4
 addi t4, t4, 4
 addi t0, t0, 1
 bne t0, s0, init_loop_i
-jalr x0, ra, 0
+jalr x0, ra, 0                  // 00008067
 // ----------------------------
 
 continue:

@@ -33,13 +33,15 @@ module REG_IF_ID(
         input [31:0] add_branch_out,
         input zero_prediction,
         input is_bne,
+        input is_first_jalr,    // 1 if it is the first jalr out of the 2 in the bubble, 0 otherwise
         
         output reg [31:0] IF_ID_inst_in,
         output reg [31:0] IF_ID_PC = 0,
         output reg [31:0] IF_ID_Imm_32,
         output reg [31:0] IF_ID_add_branch_out,
         output reg IF_ID_zero_prediction,
-        output reg IF_ID_is_bne
+        output reg IF_ID_is_bne,
+        output reg IF_ID_is_first_jalr
 
     );
     always @ (posedge clk or posedge rst) begin
@@ -56,6 +58,7 @@ module REG_IF_ID(
                 IF_ID_add_branch_out <= 32'h00000000;
                 IF_ID_zero_prediction <= 1'b0;
                 IF_ID_is_bne <= 1'b0;
+                IF_ID_is_first_jalr <= 1'b1;
             end
             else if (CE) begin
                 IF_ID_inst_in <= inst_in;
@@ -64,6 +67,7 @@ module REG_IF_ID(
                 IF_ID_add_branch_out <= add_branch_out;
                 IF_ID_zero_prediction <= zero_prediction;
                 IF_ID_is_bne <= is_bne;
+                IF_ID_is_first_jalr <= is_first_jalr;
             end
         end
         // else: if stall, then nothing changes here

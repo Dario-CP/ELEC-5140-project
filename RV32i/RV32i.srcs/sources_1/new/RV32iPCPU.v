@@ -37,6 +37,7 @@ module RV32iPCPU(
     wire [31:0] add_branch_out;
     wire [31:0] add_jal_out;
     wire [31:0] add_jalr_out;
+    wire [31:0] add_jalr_out_prov;
 
     wire [4:0] Wt_addr;
     wire [31:0] Wt_data;
@@ -55,6 +56,7 @@ module RV32iPCPU(
     wire [31:0] unrecovered_PC;
     wire is_branch;
     wire is_bne;
+    wire is_first_jalr;
     wire [1:0] Branch;      // IF
     wire [4:0] ALU_Control; // EXE
     wire ALUSrc_A;          // ID
@@ -75,6 +77,7 @@ module RV32iPCPU(
     wire [31:0] IF_ID_add_branch_out;
     wire IF_ID_zero_prediction;
     wire IF_ID_is_bne;
+    wire IF_ID_is_first_jalr;
     wire IF_ID_mem_w;
     wire IF_ID_mem_r;
     wire [4:0] IF_ID_written_reg;
@@ -130,6 +133,7 @@ module RV32iPCPU(
     // Stall
     wire PC_dstall;
     wire PC_cstall;
+    wire IF_cstall;
     wire IF_ID_cstall;
     wire IF_ID_dstall;
     wire ID_EXE_dstall;
@@ -157,12 +161,15 @@ module RV32iPCPU(
         
     Control_Stall _cstall_ (
         // Input:
-        // .Branch(Branch[1:0]),        // Old
-        .correct_prediction(correct_prediction),    // New
+        .Branch(Branch[1:0]),
+        .IF_ID_is_first_jalr(IF_ID_is_first_jalr),
+        .correct_prediction(correct_prediction),
         // Output:
+        .IF_cstall(IF_cstall),
         .IF_ID_cstall(IF_ID_cstall),
         .ID_EXE_cstall(ID_EXE_cstall),
-        .PC_cstall(PC_cstall)
+        .PC_cstall(PC_cstall),
+        .is_first_jalr(is_first_jalr)
         );
 
     assign ALU_out = EXE_MEM_ALU_out;
@@ -215,22 +222,31 @@ module RV32iPCPU(
         .a(PC_out[31:0]),         // use the "PC" from IF stage
         .b(Imm_32[31:0]),           // From IF stage
         .c(add_branch_out[31:0])
-        );   
+        );
     add_32 ADD_JAL (
-        .a(IF_ID_PC),               // MIPS: PC+4, RISC-V: PC!!!
-        .b({{11{IF_ID_inst_in[31]}}, IF_ID_inst_in[31], IF_ID_inst_in[19:12], IF_ID_inst_in[20], IF_ID_inst_in[30:21], 1'b0}), 
+        .a(PC_out[31:0]),               // MIPS: PC+4, RISC-V: PC!!!
+        .b({{11{inst_in[31]}}, inst_in[31], inst_in[19:12], inst_in[20], inst_in[30:21], 1'b0}),
         .c(add_jal_out[31:0])
         );
     add_32 ADD_JALR (
-        .a(rdata_A[31:0]), 
-        .b({{20{IF_ID_inst_in[31]}}, IF_ID_inst_in[31:20]}), 
-        .c(add_jalr_out[31:0])
+        .a(rdata_A[31:0]),  // We cannot get the most updated value of rdata_A from IF stage, so we need to stall for 1 cycle to get it at ID stage
+        .b({{20{IF_ID_inst_in[31]}}, IF_ID_inst_in[31:20]}),    // From ID stage
+        .c(add_jalr_out_prov[31:0])     // Provisional value
         );
+
+    // If IF_cstall == 1, we fetch the same instruction again
+    Mux2to1b32 MUX_JALR_SELECT (
+        .I0(add_jalr_out_prov[31:0]),
+        .I1(PC_out[31:0]),
+        .s(IF_cstall),
+        .o(add_jalr_out[31:0])
+        );
+
     Mux4to1b32 MUX5 (
         .I0(PC_out[31:0] + 32'b0100),   // From IF stage (PC+4)             00
         .I1(add_branch_out[31:0]),      // From IF stage                    01
         .I2(add_jal_out[31:0]),         // From IF stage                    10
-        .I3(add_jalr_out[31:0]),        // From IF stage                    11
+        .I3(add_jalr_out[31:0]),        // From ID stage                    11
         .s(Branch[1:0]),                // From IF stage
         .o(unrecovered_PC[31:0])
         );
@@ -252,13 +268,15 @@ module RV32iPCPU(
         .add_branch_out(add_branch_out),
         .zero_prediction(zero_prediction),
         .is_bne(is_bne),
+        .is_first_jalr(is_first_jalr),
         // Output
         .IF_ID_inst_in(IF_ID_inst_in),
         .IF_ID_PC(IF_ID_PC),
         .IF_ID_Imm_32(IF_ID_Imm_32),
         .IF_ID_add_branch_out(IF_ID_add_branch_out),
         .IF_ID_zero_prediction(IF_ID_zero_prediction),
-        .IF_ID_is_bne(IF_ID_is_bne)
+        .IF_ID_is_bne(IF_ID_is_bne),
+        .IF_ID_is_first_jalr(IF_ID_is_first_jalr)
         );
 
    // ID:-------------------------------------------------------------------------------------------

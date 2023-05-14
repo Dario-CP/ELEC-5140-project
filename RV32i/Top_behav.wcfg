@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="99 ps"></ZoomStartTime>
-      <ZoomEndTime time="118 ps"></ZoomEndTime>
-      <Cursor1Time time="112 ps"></Cursor1Time>
+      <ZoomStartTime time="174 ps"></ZoomStartTime>
+      <ZoomEndTime time="190 ps"></ZoomEndTime>
+      <Cursor1Time time="180 ps"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="197"></NameColumnWidth>
-      <ValueColumnWidth column_width="95"></ValueColumnWidth>
+      <ValueColumnWidth column_width="87"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="41" />
+   <WVObjectSize size="45" />
    <wvobject fp_name="/Top/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -363,5 +363,21 @@
       <obj_property name="ElementShortName">ALU_operation[4:0]</obj_property>
       <obj_property name="ObjectShortName">ALU_operation[4:0]</obj_property>
       <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/_cstall_/jalr_counter" type="logic">
+      <obj_property name="ElementShortName">jalr_counter</obj_property>
+      <obj_property name="ObjectShortName">jalr_counter</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/IF_cstall" type="logic">
+      <obj_property name="ElementShortName">IF_cstall</obj_property>
+      <obj_property name="ObjectShortName">IF_cstall</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/add_jalr_out" type="array">
+      <obj_property name="ElementShortName">add_jalr_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">add_jalr_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Top/_rv32ipcpu_/add_jalr_out_prov" type="array">
+      <obj_property name="ElementShortName">add_jalr_out_prov[31:0]</obj_property>
+      <obj_property name="ObjectShortName">add_jalr_out_prov[31:0]</obj_property>
    </wvobject>
 </wave_config>

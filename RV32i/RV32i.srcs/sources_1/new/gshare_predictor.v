@@ -136,7 +136,7 @@ module Gshare_Predictor(
             if (is_branch == 1) begin
                 // If last prediction was correct, increment PHT (up to 11)
                 if (correct_prediction == 1) begin
-                    if (PHT[index] < 2) begin
+                    if (PHT[index] < 3) begin
                         PHT[index] = PHT[index] + 1;
                     end
                 end
