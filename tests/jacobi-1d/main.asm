@@ -12,7 +12,7 @@ jal ra, continue    // 0d8000ef
 
 // ----------------------------
 kernel:
-addi t4, s0, -1
+addi t4, s0, -1     // fff40e93
 addi t0, x0, 0 
 k_loop_t:
 
@@ -77,7 +77,7 @@ sw t1, 0(t4) // B[i] = i + 3
 addi t3, t3, 4
 addi t4, t4, 4
 addi t0, t0, 1
-bne t0, s0, init_loop_i
+bne t0, s0, init_loop_i         // fe8292e3
 jalr x0, ra, 0                  // 00008067
 // ----------------------------
 

@@ -60,6 +60,9 @@ module Gshare_Predictor(
     reg [7:0] index = 8'b00000000;
     always @ (*) begin
         index = {PC[9:2]} ^ {BHR[7:0]}; // PC[9:2] XOR BHR[7:0]
+        
+        // TEST: index by GSELECT (concatenate PC[5:2] and BHR[3:0])
+        // index = {PC[5:2], BHR[3:0]};
     end
 
     // Update BHR (on rising edge of clk)
